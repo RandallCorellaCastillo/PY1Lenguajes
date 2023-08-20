@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+//gcc -o main main.c cJSON/cJSON.c -I cJSON -lm
+
 //Declaracion de funciones
 void mainMenu();
 void operativeMenu();
