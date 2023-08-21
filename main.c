@@ -8,6 +8,7 @@ void operativeMenu();
 void generalMenu();
 void userManagement();
 int numberOnString(char*);
+void catalogManagement();
 
 
 //Inicio del programa
@@ -46,6 +47,7 @@ void operativeMenu() {
     int option;
 
     printf("MENU OPERATIVO\n");
+    printf("1. Gestion de catalogo\n");
     printf("2. Gestion de usuarios\n");
     printf("6. Volver\n");
     printf("Ingrese su opcion: ");
@@ -55,7 +57,7 @@ void operativeMenu() {
     getchar(); 
 
     if (option == 1) {
-        return;
+        return catalogManagement();
     } else if (option == 2) {
         return userManagement();
     } else if (option == 6) {
@@ -106,4 +108,11 @@ void userManagement() {
     saveUsers(id, name);
 
     return operativeMenu();
+};
+
+void catalogManagement() {
+    char url[100];
+    printf("Ingresa la direccion de tu archivo: ");
+    fgets(url, 100, stdin);
+
 };
