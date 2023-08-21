@@ -28,9 +28,7 @@ char* readJson(char* URL){
 
     cJSON *json = cJSON_Parse(buffer);
 
-    int arraySize = cJSON_GetArraySize(cJSON_GetArrayItem(json, 0)) + 1;
-
-
+    int arraySize = cJSON_GetArraySize(json);
 
     for (int i = 0; i < arraySize; i++) {
         /*
@@ -43,7 +41,6 @@ char* readJson(char* URL){
             printf("Nombre: %s, edad: %d\n", name->valuestring, age->valueint);
         }
         */
-        
     }
     cJSON_Delete(json);
     return "";
@@ -132,7 +129,7 @@ int checkUsers(char* id){
 
     cJSON *json = cJSON_Parse(buffer);
 
-    int arraySize = cJSON_GetArraySize(cJSON_GetArrayItem(json, 0)) + 1;
+    int arraySize = cJSON_GetArraySize(json);
 
     for (int i = 0; i < arraySize; i++) {
         cJSON *item = cJSON_GetArrayItem(json, i);
