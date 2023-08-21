@@ -5,43 +5,53 @@
 #include <ctype.h>
 
 int compare(char* val1, char* val2) {
+    //compare the char*
     int result = strcmp(val1, val2);
     return result;
 }
 
 void saveToJson(const char *data, const char *filename) {
+    //open file.
     FILE *file = fopen(filename, "w");
+    //
     if (!file) {
         perror("Error al abrir el archivo para escribir");
     }
-
+    //close and write data in file.
     fprintf(file, "%s\n", data);
+    //close.
     fclose(file);
 }
 
 char* readJson(char* URL){
     // open the file
     FILE *fp = fopen(URL, "r");
-    char buffer[1024];
+    //size of file.
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    //buffer
+    char buffer[size];
+   
     int len = fread(buffer, 1, sizeof(buffer), fp);
+    //close the file.
     fclose(fp);
-
+    //open the json object.
     cJSON *json = cJSON_Parse(buffer);
-
     int arraySize = cJSON_GetArraySize(json);
-
+    //for each item in json.
     for (int i = 0; i < arraySize; i++) {
         /*
         cJSON *item = cJSON_GetArrayItem(json, i);
         cJSON *name = cJSON_GetObjectItemCaseSensitive(item, "name");
-
         cJSON *age = cJSON_GetObjectItemCaseSensitive(item, "age");
-
         if (cJSON_IsString(name)) {
             printf("Nombre: %s, edad: %d\n", name->valuestring, age->valueint);
         }
         */
     }
+    //close the object
     cJSON_Delete(json);
     return "";
 }
@@ -49,21 +59,19 @@ char* readJson(char* URL){
 
 int numberOnString(char* text) {
     int i = 0;
-
+    //find number in text.
     while (text[i] != '\0') {
         if (!isdigit(text[i])) {
             return 0;
         };
-
         i++;
     };   
-
     return 1;
 };
 
 int correctString(char* text) {
     int i = 0;
-
+    //find letters in number.
     while (text[i] != '\0') {
         if (isdigit(text[i])) {
             return 0;
@@ -121,10 +129,18 @@ void saveUsers (char* id, char* name) {
 
 
 
-int checkUsers(char* id){
+int checkUsers(char* id) {
+
     FILE *fp = fopen("users.json", "r");
-    char buffer[1024];
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+
+    rewind(fp);
+
+    char buffer[size];
     int len = fread(buffer, 1, sizeof(buffer), fp);
+    printf(buffer);
+    
     fclose(fp);
 
     cJSON *json = cJSON_Parse(buffer);
@@ -141,4 +157,5 @@ int checkUsers(char* id){
     };
     cJSON_Delete(json);
     return 1;
+
 };
