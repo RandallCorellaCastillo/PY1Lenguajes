@@ -34,26 +34,52 @@ char* readJson(char* URL){
     //buffer
     char buffer[size];
    
-    int len = fread(buffer, 1, sizeof(buffer), fp);
+    fread(buffer, 1, sizeof(buffer), fp);
     //close the file.
     fclose(fp);
+
+    char *text = (char *)malloc(sizeof(buffer) * sizeof(char));
+    strcpy(text, buffer);
+
+    return text;
+}
+
+void seekCommun(char* info) {
+
+    char* buffer = readJson("ejemplares.json");
     //open the json object.
     cJSON *json = cJSON_Parse(buffer);
     int arraySize = cJSON_GetArraySize(json);
     //for each item in json.
     for (int i = 0; i < arraySize; i++) {
-        /*
         cJSON *item = cJSON_GetArrayItem(json, i);
-        cJSON *name = cJSON_GetObjectItemCaseSensitive(item, "name");
-        cJSON *age = cJSON_GetObjectItemCaseSensitive(item, "age");
-        if (cJSON_IsString(name)) {
-            printf("Nombre: %s, edad: %d\n", name->valuestring, age->valueint);
-        }
-        */
+        //id
+        cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //Titulo.
+        cJSON *title = cJSON_GetObjectItemCaseSensitive(item, "titulo");
+        //author.
+        cJSON *author = cJSON_GetObjectItemCaseSensitive(item, "autor");
+        //year
+        cJSON *year = cJSON_GetObjectItemCaseSensitive(item, "anno");
+        //gender
+        cJSON *gender = cJSON_GetObjectItemCaseSensitive(item, "genero");
+        //sumary
+        cJSON *sumary = cJSON_GetObjectItemCaseSensitive(item, "reseña");
+        //
+        char *resT = strstr(title->valuestring, info);
+        char *resA = strstr(author->valuestring, info);
+        char *resS = strstr(sumary->valuestring, info);
+        if(resA != NULL || resT != NULL || resS != NULL) printf("ID: %s, Titulo: %s, autor: %s, año: %s, genero: %s, reseña: %s\n", 
+        id->valuestring, title->valuestring, author->valuestring, year->valuestring, gender->valuestring, sumary->valuestring);
+        
+      
     }
     //close the object
     cJSON_Delete(json);
-    return "";
+}
+
+void advancedSeek(char* info, char typeCE) {
+    
 }
 
 
