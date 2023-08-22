@@ -9,6 +9,7 @@ void generalMenu();
 void userManagement();
 int numberOnString(char*);
 void catalogManagement();
+void processTokens(char*);
 
 
 //Inicio del programa
@@ -74,7 +75,6 @@ void generalMenu() {
 };
 
 
-
 void userManagement() {
     char name[100];
     char id[100];
@@ -111,8 +111,39 @@ void userManagement() {
 };
 
 void catalogManagement() {
-    char url[100];
+    char url[200];
     printf("Ingresa la direccion de tu archivo: ");
-    fgets(url, 100, stdin);
+    fgets(url, 200, stdin);
+    url[strlen(url) - 1] = '\0';
+    FILE *fp = fopen(url, "r");
 
+    if (fp == NULL) {
+        printf("No se pudo abrir el archivo.\n");
+        return operativeMenu();
+    };
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+    char buffer[size];
+    fread(buffer, 1, sizeof(buffer), fp);
+    fclose(fp);
+
+    const char delimiter[] = "\n";
+    char *token = strtok(buffer, delimiter);
+
+    while (token != NULL) {
+        char *temp = (char *)malloc(strlen(token) + 1);
+        strcpy(temp, token);
+        processTokens(temp);
+        free(temp);
+        token = strtok(NULL, delimiter);
+    };
+
+    printf("\nLibros inexistentes agregados con exito\n\n");
+
+    return operativeMenu();
 };
+
+
+//C:\\Users\\fredd\\Downloads\\test.txt

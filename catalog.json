@@ -1,0 +1,105 @@
+[{
+		"id":	0,
+		"nombre":	"Cien anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	1,
+		"nombre":	"Cien anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	2,
+		"nombre":	"Cien anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	3,
+		"nombre":	"Cien anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	4,
+		"nombre":	"1984",
+		"autor":	"George Orwell",
+		"año de publicacion":	"1949",
+		"genero":	"Distopia",
+		"sinopsis":	"En un futuro totalitario, el protagonista lucha contra el regimen",
+		"disponibilidad":	1
+	}, {
+		"id":	5,
+		"nombre":	"1984",
+		"autor":	"George Orwell",
+		"año de publicacion":	"1949",
+		"genero":	"Distopia",
+		"sinopsis":	"En un futuro totalitario, el protagonista lucha contra el regimen",
+		"disponibilidad":	1
+	}, {
+		"id":	6,
+		"nombre":	"1984",
+		"autor":	"George Orwell",
+		"año de publicacion":	"1949",
+		"genero":	"Distopia",
+		"sinopsis":	"En un futuro totalitario, el protagonista lucha contra el regimen",
+		"disponibilidad":	1
+	}, {
+		"id":	7,
+		"nombre":	"Orgullo y prejuicio",
+		"autor":	"Jane Austen",
+		"año de publicacion":	"1813",
+		"genero":	"Novela romantica",
+		"sinopsis":	"La historia sigue Elizabeth Bennet mientras",
+		"disponibilidad":	1
+	}, {
+		"id":	8,
+		"nombre":	"Orgullo y prejuicio",
+		"autor":	"Jane Austen",
+		"año de publicacion":	"1813",
+		"genero":	"Novela romantica",
+		"sinopsis":	"La historia sigue Elizabeth Bennet mientras",
+		"disponibilidad":	1
+	}, {
+		"id":	9,
+		"nombre":	"anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	10,
+		"nombre":	"anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	11,
+		"nombre":	"anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}, {
+		"id":	12,
+		"nombre":	"anos de soledad",
+		"autor":	"Gabriel Garcia Marquez",
+		"año de publicacion":	"1967",
+		"genero":	"Realismo magico",
+		"sinopsis":	"Esta novela cuenta la historia",
+		"disponibilidad":	1
+	}]
