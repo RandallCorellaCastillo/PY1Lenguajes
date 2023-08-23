@@ -85,7 +85,7 @@ void advancedSeek(char* info, char typeCE) {
 
 int numberOnString(char* text) {
     int i = 0;
-    //find number in text.
+    //find letters in number.
     while (text[i] != '\0') {
         if (!isdigit(text[i])) {
             return 0;
@@ -97,7 +97,7 @@ int numberOnString(char* text) {
 
 int correctString(char* text) {
     int i = 0;
-    //find letters in number.
+    //find number in text.
     while (text[i] != '\0') {
         if (isdigit(text[i])) {
             return 0;
@@ -244,7 +244,7 @@ int checkBook(char* name) {
     return 1;
 };
 
-void processTokens(char *token) {
+int processTokens(char *token) {
     char* caracteristics[5];
     int i = 0;
 
@@ -258,11 +258,28 @@ void processTokens(char *token) {
         i++;
     };
 
+    if (i != 6) {
+        printf("\nERROR-> Toda linea debe seguir el formato especificado");
+        return 0;
+    };
+
     if (checkBook(caracteristics[0]) == 0) {
         printf("\nERROR-> ");
         printf("%s", caracteristics[0]);
         printf(" <-ya existe en nuestro catalogo\n");
-    } else {
-        saveBooks(caracteristics[0], caracteristics[1], caracteristics[2], caracteristics[3], caracteristics[4], caracteristics[5]);
+        return 0;
     };
+
+    if (numberOnString(caracteristics[2]) == 0 && strlen(caracteristics[2]) != 4) {
+        printf("\nERROR-> El ano de publicacion debe contener 4 digitos y no contener letras");
+        return 0;
+    };
+
+    if (numberOnString(caracteristics[5]) == 0) {
+        printf("\nERROR-> la cantidad a agregar debe ser un numero, osease no debe contener letras");
+        return 0;
+    };
+
+    saveBooks(caracteristics[0], caracteristics[1], caracteristics[2], caracteristics[3], caracteristics[4], caracteristics[5]);
+    return 1;
 };

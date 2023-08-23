@@ -9,7 +9,7 @@ void generalMenu();
 void userManagement();
 int numberOnString(char*);
 void catalogManagement();
-void processTokens(char*);
+int processTokens(char*);
 
 
 //Inicio del programa
@@ -132,15 +132,25 @@ void catalogManagement() {
     const char delimiter[] = "\n";
     char *token = strtok(buffer, delimiter);
 
+    int flag = 0;
+
     while (token != NULL) {
         char *temp = (char *)malloc(strlen(token) + 1);
         strcpy(temp, token);
-        processTokens(temp);
+
+        if (processTokens(temp)) {
+            flag = 1;
+        };
+
         free(temp);
         token = strtok(NULL, delimiter);
     };
 
-    printf("\nLibros inexistentes agregados con exito\n\n");
+    if (flag == 1) {
+        printf("\nLibros que cumplan los parametros agregados con exito\n\n");
+    } else {
+        printf("\nNingun libro cumplio los parametros, no se actualizo el catalogo\n\n");
+    };
 
     return operativeMenu();
 };
