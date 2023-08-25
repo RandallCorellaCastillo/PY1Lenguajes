@@ -358,7 +358,7 @@ void viewLoan() {
         //id
         cJSON *usuario = cJSON_GetObjectItemCaseSensitive(item, "usuario");
         //Titulo.
-        cJSON *idE = cJSON_GetObjectItemCaseSensitive(item, "id");
+        cJSON *idE = cJSON_GetObjectItemCaseSensitive(item, "idEjemplar");
         //author.
         cJSON *start = cJSON_GetObjectItemCaseSensitive(item, "inicio");
         //year
@@ -413,7 +413,7 @@ void loanMaturity() {
         //id
         cJSON *usuario = cJSON_GetObjectItemCaseSensitive(item, "usuario");
         //Titulo.
-        cJSON *idE = cJSON_GetObjectItemCaseSensitive(item, "id");
+        cJSON *idE = cJSON_GetObjectItemCaseSensitive(item, "idEjemplar");
         //author.
         cJSON *start = cJSON_GetObjectItemCaseSensitive(item, "inicio");
         //year
