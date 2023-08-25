@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 int compare(char* val1, char* val2) {
     //compare the char*
@@ -51,6 +52,7 @@ void seekCommun(char* info) {
     cJSON *json = cJSON_Parse(buffer);
     int arraySize = cJSON_GetArraySize(json);
     //for each item in json.
+    printf("==============================================================================================================.\n");
     for (int i = 0; i < arraySize; i++) {
         cJSON *item = cJSON_GetArrayItem(json, i);
         //id
@@ -69,10 +71,9 @@ void seekCommun(char* info) {
         char *resT = strstr(title->valuestring, info);
         char *resA = strstr(author->valuestring, info);
         char *resS = strstr(sumary->valuestring, info);
-        if(resA != NULL || resT != NULL || resS != NULL) printf("ID: %s, Titulo: %s, autor: %s, año: %s, genero: %s, reseña: %s\n", 
-        id->valuestring, title->valuestring, author->valuestring, year->valuestring, gender->valuestring, sumary->valuestring);
-        
-      
+        if(resA != NULL || resT != NULL || resS != NULL) printf("ID: %s, Titulo: %s, reseña: %s, Estado: Disponible\n", 
+        id->valuestring, title->valuestring, sumary->valuestring);
+        printf("==============================================================================================================.\n");
     }
     //close the object
     cJSON_Delete(json);
@@ -283,3 +284,96 @@ int processTokens(char *token) {
     saveBooks(caracteristics[0], caracteristics[1], caracteristics[2], caracteristics[3], caracteristics[4], caracteristics[5]);
     return 1;
 };
+
+
+int validateDate(char *date) {
+    int dia, mes, anio;
+    // Intentamos extraer los valores de día, mes y año de la cadena
+    sscanf(date, "%d/%d/%d", &dia, &mes, &anio);
+
+    if (sscanf(date, "%d/%d/%d", &dia, &mes, &anio) != 3 || dia > 31 || mes > 12 || anio > 2050) {
+         return 0;
+    } else {
+       return 1;
+    }
+}
+
+int checkNameUsers(char* name) {
+    FILE *fp = fopen("users.json", "r");
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    char buffer[size];
+    int len = fread(buffer, 1, sizeof(buffer), fp);
+    fclose(fp);
+
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+        cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+        if (strcmp(idJ->valuestring, name) == 0) {
+            return 1;
+        };
+    };
+    cJSON_Delete(json);
+    return 0;
+};
+
+void simpleSeek() {
+    char text[100];
+    printf("Ingrese el texto a buscar:\n");
+    scanf("%s", text);
+    printf("\n");
+    seekCommun(text);
+    printf("\n");
+
+}
+
+
+int validateStringOnDate(char* text) {
+    char com = '/';
+    int i = 0;
+    //find letters in number.
+    while (text[i] != '\0') {
+        if (!isdigit(text[i]) && text[i] != com) {
+            return 0;
+        };
+        i++;
+    };   
+    return 1;
+};
+
+
+void saveLoan(char* UserL, int id, char* initDate, char* endDate) {
+    FILE *file = fopen("prestamos.json", "r");
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+    char *fileContent = (char *)malloc(fileSize + 1);
+    fread(fileContent, 1, fileSize, file);
+    fclose(file);
+    fileContent[fileSize] = '\0';
+
+    // Analizar el contenido JSON
+    cJSON *jsonArray = cJSON_Parse(fileContent);
+    free(fileContent);
+
+    // Crear un nuevo objeto y agregarlo al arreglo
+    cJSON *newObj = cJSON_CreateObject();
+    cJSON_AddStringToObject(newObj, "usuario", UserL);
+    cJSON_AddNumberToObject(newObj, "id", id);
+    cJSON_AddStringToObject(newObj, "inicio", initDate);
+    cJSON_AddStringToObject(newObj, "fin", endDate);
+    cJSON_AddItemToArray(jsonArray, newObj);
+
+    // Convertir el JSON a una cadena
+    char *json_str = cJSON_Print(jsonArray);
+    // Guardar en archivo
+    saveToJson(json_str, "prestamos.json");
+    cJSON_Delete(jsonArray);
+    free(json_str);
+};
+

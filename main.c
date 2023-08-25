@@ -11,6 +11,16 @@ int numberOnString(char*);
 void catalogManagement();
 int processTokens(char*);
 
+int validateStringOnDate(char*);
+void saveLoan(char*, int , char*, char*);
+int checkNameUsers(char*);
+void simpleSeek();
+void loan();
+int validateDate(char*);
+int getIdloan();
+char* getDateLoan();
+char* getNameLoan();
+
 
 //Inicio del programa
 int main() {
@@ -69,11 +79,6 @@ void operativeMenu() {
         return operativeMenu();
     };
 };
-
-void generalMenu() {
-    return;
-};
-
 
 void userManagement() {
     char name[100];
@@ -154,6 +159,139 @@ void catalogManagement() {
 
     return operativeMenu();
 };
+
+
+void generalMenu() {
+    int option;
+    printf("Opciones Generales\n");
+    printf("1. Búsqueda simple\n");
+    printf("2. Búsqueda avanzada\n");
+    printf("3. Préstamo\n");
+    printf("4. Devolución\n");
+    printf("5. Volver\n");
+    printf("Ingrese su opcion: ");
+    scanf("%d", &option);
+    printf("\n");
+    getchar(); 
+
+    if (option == 1) {
+        simpleSeek();
+        generalMenu();
+        printf("\n");
+
+    } else if (option == 2) {
+
+    } else if (option == 3) {
+        
+    } else if (option == 4) {
+        loan();
+    } else if (option == 5) {
+        mainMenu();
+    } else {
+        printf("Opcion incorrecta, intentalo de nuevo\n");
+        getchar(); 
+        fflush(stdin);
+        return generalMenu();
+    };
+    
+};
+
+
+void loan() {
+    fflush(stdin);
+    char userName[100];
+    char Sdate[100];
+    char Edate[100];
+    int id;
+    //Name
+    strcpy(userName, getNameLoan());
+    //ID
+    id = getIdloan();
+
+    strcpy(Sdate, getDateLoan("inicio"));
+    strcpy(Edate, getDateLoan("finalizacion"));
+
+    struct tm fecha1 = {0}; //
+    struct tm fecha2 = {0}; // 
+    // Utilizamos sscanf para extraer los valores numéricos de la cadena
+    
+    sscanf(Sdate, "%d/%d/%d", &fecha1.tm_mday, &fecha1.tm_mon, &fecha1.tm_year);
+    sscanf(Edate, "%d/%d/%d", &fecha2.tm_mday, &fecha2.tm_mon, &fecha2.tm_year);
+
+    fecha1.tm_mon -= 1; // Ajustamos el mes a 0-11
+    fecha1.tm_year -= 1900; // Ajustamos el año a contar desde 1900
+    
+    fecha2.tm_mon -= 1;
+    fecha2.tm_year -= 1900;
+    
+    time_t tiempo_fecha1 = mktime(&fecha1);
+    time_t tiempo_fecha2 = mktime(&fecha2);
+
+    if(tiempo_fecha1 < tiempo_fecha2) {printf("Prestamo realizado con exito");}
+    else {
+        printf("las fechas de inicio no debe ser mayor o igual a la de finalizacion.");
+    }
+    saveLoan(userName, id, Sdate, Edate);
+    return generalMenu();
+    
+
+}
+
+char* getNameLoan() {
+    char userName[100];
+    printf("Ingrese el nombre de usuario:\n");
+    fgets(userName, sizeof(userName), stdin); // Lee la cadena con espacios
+    fflush(stdin);
+
+    userName[strlen(userName) - 1] = '\0';
+
+    if (checkNameUsers(userName) != 1) { 
+        printf("\nEl usuario no existe.\n");
+        return getNameLoan();
+    }
+    char* res;
+    int largo = strlen(userName);
+    res = (char*) malloc (largo * sizeof(char));
+    strcpy(res, userName);
+
+    return res;
+}
+
+int getIdloan() {
+    fflush(stdin);
+    int id;
+    printf("\nIngrese el id del libro que solicita:\n");
+    if (scanf("%d", &id) != 1) {
+        printf("No ingreso un numero valido.\n");
+        return getIdloan();
+    }
+    fflush(stdin);
+    return id;
+}
+
+char* getDateLoan(char* info) {
+    char date[100];
+    fflush(stdin);
+    //date
+    printf("\nIngrese la fecha de %s con el formato 'dd/mm/yyyy':\n", info);
+    fgets(date, sizeof(date), stdin); // Lee la cadena con espacios
+
+    date[strlen(date) - 1] = '\0';
+    if(!validateStringOnDate(date)){
+        printf("La fecha no puede contener caracteres.");
+        return getDateLoan(info);
+    }
+    if(!validateDate(date)) {printf("\nFecha invalida.\n");return getDateLoan(info);}
+    //clear
+    
+    char* res;
+    int largo = strlen(date);
+    res = (char*) malloc (largo * sizeof(char));
+    strcpy(res, date);
+    fflush(stdin);
+    return res;
+}
+
 
 
 //C:\\Users\\fredd\\Downloads\\test.txt
