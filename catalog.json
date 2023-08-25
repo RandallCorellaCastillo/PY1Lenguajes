@@ -21,7 +21,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	3,
 		"nombre":	"Cien anos de soledad",
@@ -37,7 +37,7 @@
 		"año de publicacion":	"1949",
 		"genero":	"Distopia",
 		"sinopsis":	"En un futuro totalitario, el protagonista lucha contra el regimen",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	5,
 		"nombre":	"1984",
@@ -45,7 +45,7 @@
 		"año de publicacion":	"1949",
 		"genero":	"Distopia",
 		"sinopsis":	"En un futuro totalitario, el protagonista lucha contra el regimen",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	6,
 		"nombre":	"1984",

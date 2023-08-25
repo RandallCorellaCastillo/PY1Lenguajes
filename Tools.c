@@ -45,9 +45,38 @@ char* readJson(char* URL){
     return text;
 }
 
+
+int verifyDisp(int idSeek) {
+    FILE *file = fopen("catalog.json", "r");
+
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+
+    char *fileContent = (char *)malloc(fileSize + 1);
+    fread(fileContent, 1, fileSize, file);
+
+    fclose(file);
+
+    fileContent[fileSize] = '\0';
+
+    // Analizar el contenido JSON
+    cJSON *jsonArray = cJSON_Parse(fileContent);
+
+    cJSON *item = cJSON_GetArrayItem(jsonArray, idSeek);
+
+    cJSON *disp = cJSON_GetObjectItemCaseSensitive(item, "disponibilidad");
+    
+    if(disp->valueint == 0) return 0;
+    else return 1;
+
+    free(jsonArray);
+
+}
+
 void seekCommun(char* info) {
 
-    char* buffer = readJson("ejemplares.json");
+    char* buffer = readJson("catalog.json");
     //open the json object.
     cJSON *json = cJSON_Parse(buffer);
     int arraySize = cJSON_GetArraySize(json);
@@ -58,22 +87,32 @@ void seekCommun(char* info) {
         //id
         cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
         //Titulo.
-        cJSON *title = cJSON_GetObjectItemCaseSensitive(item, "titulo");
+        cJSON *title = cJSON_GetObjectItemCaseSensitive(item, "nombre");
         //author.
         cJSON *author = cJSON_GetObjectItemCaseSensitive(item, "autor");
         //year
-        cJSON *year = cJSON_GetObjectItemCaseSensitive(item, "anno");
+        cJSON *year = cJSON_GetObjectItemCaseSensitive(item, "año de publicacion");
         //gender
         cJSON *gender = cJSON_GetObjectItemCaseSensitive(item, "genero");
         //sumary
-        cJSON *sumary = cJSON_GetObjectItemCaseSensitive(item, "reseña");
+        cJSON *sumary = cJSON_GetObjectItemCaseSensitive(item, "sinopsis");
         //
         char *resT = strstr(title->valuestring, info);
         char *resA = strstr(author->valuestring, info);
         char *resS = strstr(sumary->valuestring, info);
-        if(resA != NULL || resT != NULL || resS != NULL) printf("ID: %s, Titulo: %s, reseña: %s, Estado: Disponible\n", 
-        id->valuestring, title->valuestring, sumary->valuestring);
-        printf("==============================================================================================================.\n");
+        char disp[20];
+
+        if(verifyDisp(id->valueint)) {
+            strcpy(disp, "Disponible");
+        } else {
+            strcpy(disp, "Ocupado");
+        }
+
+        if(resA != NULL || resT != NULL || resS != NULL) {
+            printf("ID: %d, Titulo: %s, reseña: %s, Estado: %s\n", 
+            id->valueint, title->valuestring, sumary->valuestring, disp);
+            printf("==============================================================================================================.\n");
+        }
     }
     //close the object
     cJSON_Delete(json);
@@ -377,3 +416,49 @@ void saveLoan(char* UserL, int id, char* initDate, char* endDate) {
     free(json_str);
 };
 
+void modifyCatalogDisp(int idSeek) {
+    FILE *file = fopen("catalog.json", "r");
+
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+
+    char *fileContent = (char *)malloc(fileSize + 1);
+    fread(fileContent, 1, fileSize, file);
+
+    fclose(file);
+
+    fileContent[fileSize] = '\0';
+
+    // Analizar el contenido JSON
+    cJSON *jsonArray = cJSON_Parse(fileContent);
+
+    cJSON_GetArrayItem(jsonArray, idSeek);
+
+    cJSON_SetNumberValue(cJSON_GetObjectItem(cJSON_GetArrayItem(jsonArray, idSeek), "disponibilidad"), 0);
+
+    //id
+    char *json_str = cJSON_Print(jsonArray);
+
+    saveToJson(json_str, "catalog.json");
+
+    free(json_str);
+    free(jsonArray);
+
+}
+
+int sizeOfCatalog() {
+    FILE *fp = fopen("catalog.json", "r");
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    char buffer[size];
+    int len = fread(buffer, 1, sizeof(buffer), fp);
+    fclose(fp);
+
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+    free(json);
+    return arraySize;
+}

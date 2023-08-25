@@ -182,9 +182,9 @@ void generalMenu() {
     } else if (option == 2) {
 
     } else if (option == 3) {
-        
-    } else if (option == 4) {
         loan();
+    } else if (option == 4) {
+        //loan();
     } else if (option == 5) {
         mainMenu();
     } else {
@@ -227,11 +227,12 @@ void loan() {
     time_t tiempo_fecha1 = mktime(&fecha1);
     time_t tiempo_fecha2 = mktime(&fecha2);
 
-    if(tiempo_fecha1 < tiempo_fecha2) {printf("Prestamo realizado con exito");}
+    if(tiempo_fecha1 < tiempo_fecha2) {printf("Prestamo realizado con exito.\n");}
     else {
         printf("las fechas de inicio no debe ser mayor o igual a la de finalizacion.");
     }
     saveLoan(userName, id, Sdate, Edate);
+    modifyCatalogDisp(id);
     return generalMenu();
     
 
@@ -260,11 +261,23 @@ char* getNameLoan() {
 int getIdloan() {
     fflush(stdin);
     int id;
+
     printf("\nIngrese el id del libro que solicita:\n");
     if (scanf("%d", &id) != 1) {
         printf("No ingreso un numero valido.\n");
         return getIdloan();
     }
+
+    if(sizeOfCatalog() < id) {
+        printf("El ejemplar no existe\n");
+        return getIdloan();
+    }
+
+    if(!verifyDisp(id)) {
+        printf("El ejemplar seleccionado esta actualmente ocupado.\n");
+        return getIdloan();
+    }
+
     fflush(stdin);
     return id;
 }
