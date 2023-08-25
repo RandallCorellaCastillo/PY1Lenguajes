@@ -398,14 +398,17 @@ void saveLoan(char* UserL, int id, char* initDate, char* endDate) {
 
     // Analizar el contenido JSON
     cJSON *jsonArray = cJSON_Parse(fileContent);
+    int arraySize = cJSON_GetArraySize(jsonArray);
     free(fileContent);
 
     // Crear un nuevo objeto y agregarlo al arreglo
     cJSON *newObj = cJSON_CreateObject();
+    cJSON_AddNumberToObject(newObj, "id", arraySize);
     cJSON_AddStringToObject(newObj, "usuario", UserL);
-    cJSON_AddNumberToObject(newObj, "id", id);
+    cJSON_AddNumberToObject(newObj, "idEjemplar", id);
     cJSON_AddStringToObject(newObj, "inicio", initDate);
     cJSON_AddStringToObject(newObj, "fin", endDate);
+    cJSON_AddNumberToObject(newObj, "estado", 1);
     cJSON_AddItemToArray(jsonArray, newObj);
 
     // Convertir el JSON a una cadena

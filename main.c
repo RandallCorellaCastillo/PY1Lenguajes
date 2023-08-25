@@ -1,6 +1,6 @@
 #include "Tools.c"
 
-//gcc -o main main.c cJSON/cJSON.c -I cJSON -lm
+
 
 //Declaracion de funciones
 void mainMenu();
@@ -20,7 +20,8 @@ int validateDate(char*);
 int getIdloan();
 char* getDateLoan();
 char* getNameLoan();
-
+void viewLoan();
+void loanMaturity();
 
 //Inicio del programa
 int main() {
@@ -60,18 +61,24 @@ void operativeMenu() {
     printf("MENU OPERATIVO\n");
     printf("1. Gestion de catalogo\n");
     printf("2. Gestion de usuarios\n");
+    printf("3. Historial de prestamos\n");
+    printf("4. Vencimiento de prestamos\n");
     printf("6. Volver\n");
     printf("Ingrese su opcion: ");
     scanf("%d", &option);
     printf("\n");
 
     getchar(); 
-
     if (option == 1) {
         return catalogManagement();
     } else if (option == 2) {
         return userManagement();
-    } else if (option == 6) {
+    } else if (option == 3) {
+        return viewLoan();
+    } else if (option == 4) {
+        return loanMaturity();
+    } 
+    else if (option == 6) {
         return mainMenu();
     } else {
         printf("Opcion incorrecta, intentalo de nuevo\n");
@@ -229,7 +236,9 @@ void loan() {
 
     if(tiempo_fecha1 < tiempo_fecha2) {printf("Prestamo realizado con exito.\n");}
     else {
-        printf("las fechas de inicio no debe ser mayor o igual a la de finalizacion.");
+        printf("las fechas de inicio no debe ser mayor o igual a la de finalizacion.\n");
+        return loan();
+
     }
     saveLoan(userName, id, Sdate, Edate);
     modifyCatalogDisp(id);
@@ -306,5 +315,142 @@ char* getDateLoan(char* info) {
 }
 
 
+void viewLoan() {
+
+    char Sdate[100];
+    char Edate[100];
+    strcpy(Sdate, getDateLoan("inicio"));
+    strcpy(Edate, getDateLoan("finalizacion"));
+    //calcular las fechas en valores numéricos.
+    struct tm fecha1 = {0}; //
+    struct tm fecha2 = {0}; // 
+    struct tm fecha3 = {0}; // 
+    // Utilizamos sscanf para extraer los valores numéricos de la cadena
+    
+    sscanf(Sdate, "%d/%d/%d", &fecha1.tm_mday, &fecha1.tm_mon, &fecha1.tm_year);
+    sscanf(Edate, "%d/%d/%d", &fecha2.tm_mday, &fecha2.tm_mon, &fecha2.tm_year);
+
+    fecha1.tm_mon -= 1; // Ajustamos el mes a 0-11
+    fecha1.tm_year -= 1900; // Ajustamos el año a contar desde 1900
+    
+    fecha2.tm_mon -= 1;
+    fecha2.tm_year -= 1900;
+    
+    time_t tiempo_fecha1 = mktime(&fecha1);
+    time_t tiempo_fecha2 = mktime(&fecha2);
+
+    if(!(tiempo_fecha1 < tiempo_fecha2)) {
+        printf("las fechas de inicio no debe ser mayor o igual a la de finalizacion.\n");
+        return viewLoan();
+    }
+
+    //tiempo_fecha1 < tiempo_fecha2
+    char* buffer = readJson("prestamos.json");
+    //open the json object.
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+    //for each item in json.
+    printf("====================================================Prestamos=========================================================.\n");
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+
+        cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //id
+        cJSON *usuario = cJSON_GetObjectItemCaseSensitive(item, "usuario");
+        //Titulo.
+        cJSON *idE = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //author.
+        cJSON *start = cJSON_GetObjectItemCaseSensitive(item, "inicio");
+        //year
+        cJSON *end = cJSON_GetObjectItemCaseSensitive(item, "fin");
+        //gender
+        cJSON *state = cJSON_GetObjectItemCaseSensitive(item, "estado");
+
+        sscanf(end->valuestring, "%d/%d/%d", &fecha3.tm_mday, &fecha3.tm_mon, &fecha3.tm_year);
+
+        fecha3.tm_mon -= 1; // Ajustamos el mes a 0-11
+        fecha3.tm_year -= 1900; // Ajustamos el año a contar desde 1900
+        time_t tiempo_fecha3 = mktime(&fecha3);
+
+        if(tiempo_fecha3 >= tiempo_fecha1 && tiempo_fecha3 <= tiempo_fecha2) {
+            char stateR[100];
+            if(state->valueint == 1) strcpy(stateR, "Activo");
+            else strcpy(stateR, "Finalizado");
+            printf("ID Prestamo: %d\nUsuario: %s\nID ejemplar: %d\nFecha de inicio: %s\nFecha de finalizacion: %s\nEstado: %s\n", 
+            id->valueint, usuario->valuestring, idE->valueint, start->valuestring, end->valuestring, stateR);
+            printf("==============================================================================================================.\n");
+        }
+    }
+    //close the object
+    cJSON_Delete(json);
+    return operativeMenu();
+}
+
+void loanMaturity() {
+
+    time_t currentTime;
+    time(&currentTime);
+
+    // Convert the time to a struct tm
+    struct tm *fechaActual = localtime(&currentTime);
+
+    fechaActual->tm_mon = fechaActual->tm_mon;
+    fechaActual->tm_year = fechaActual->tm_year;
+
+    time_t tiempo_fechaActual = mktime(fechaActual);
+    struct tm fecha2 = {0}; //
+    
+    //tiempo_fecha1 < tiempo_fecha2
+    char* buffer = readJson("prestamos.json");
+    //open the json object.
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+    //for each item in json.
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+
+        cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //id
+        cJSON *usuario = cJSON_GetObjectItemCaseSensitive(item, "usuario");
+        //Titulo.
+        cJSON *idE = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //author.
+        cJSON *start = cJSON_GetObjectItemCaseSensitive(item, "inicio");
+        //year
+        cJSON *end = cJSON_GetObjectItemCaseSensitive(item, "fin");
+        //gender
+        cJSON *state = cJSON_GetObjectItemCaseSensitive(item, "estado");
+
+        sscanf(end->valuestring, "%d/%d/%d", &fecha2.tm_mday, &fecha2.tm_mon, &fecha2.tm_year);
+
+        fecha2.tm_mon -= 1; // Ajustamos el mes a 0-11
+        fecha2.tm_year -= 1900; // Ajustamos el año a contar desde 1900
+        time_t tiempo_fecha2 = mktime(&fecha2);
+
+
+        //printf("Fecha actual: %11d, Fecha prestamo: %11d", tiempo_fechaActual, tiempo_fecha2);
+
+        if(tiempo_fechaActual > tiempo_fecha2) {
+            printf("====================================================Prestamo Vencido=========================================================.\n");
+            printf("ID Prestamo: %d\nUsuario: %s\nID ejemplar: %d\nFecha de inicio: %s\nFecha de finalizacion: %s\n", 
+            id->valueint, usuario->valuestring, idE->valueint, start->valuestring, end->valuestring);
+        } else {
+            fecha2.tm_mday -= 3;
+            tiempo_fecha2 = mktime(&fecha2);
+
+            if(tiempo_fechaActual > tiempo_fecha2) {
+                printf("====================================================Prestamo A Vencer=========================================================.\n");
+                printf("ID Prestamo: %d\nUsuario: %s\nID ejemplar: %d\nFecha de inicio: %s\nFecha de finalizacion: %s\n", 
+                id->valueint, usuario->valuestring, idE->valueint, start->valuestring, end->valuestring);
+            }
+        }
+
+
+    }
+    //close the object
+    cJSON_Delete(json);
+    printf("\n");
+    return operativeMenu();
+}
 
 //C:\\Users\\fredd\\Downloads\\test.txt

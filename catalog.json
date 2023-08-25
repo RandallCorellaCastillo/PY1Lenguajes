@@ -5,7 +5,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	1,
 		"nombre":	"Cien anos de soledad",
@@ -13,7 +13,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	2,
 		"nombre":	"Cien anos de soledad",
@@ -29,7 +29,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	4,
 		"nombre":	"1984",
@@ -53,7 +53,7 @@
 		"año de publicacion":	"1949",
 		"genero":	"Distopia",
 		"sinopsis":	"En un futuro totalitario, el protagonista lucha contra el regimen",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	7,
 		"nombre":	"Orgullo y prejuicio",
@@ -61,7 +61,7 @@
 		"año de publicacion":	"1813",
 		"genero":	"Novela romantica",
 		"sinopsis":	"La historia sigue Elizabeth Bennet mientras",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	8,
 		"nombre":	"Orgullo y prejuicio",
@@ -69,7 +69,7 @@
 		"año de publicacion":	"1813",
 		"genero":	"Novela romantica",
 		"sinopsis":	"La historia sigue Elizabeth Bennet mientras",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	9,
 		"nombre":	"anos de soledad",
@@ -77,7 +77,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	10,
 		"nombre":	"anos de soledad",
@@ -85,7 +85,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	11,
 		"nombre":	"anos de soledad",
@@ -93,7 +93,7 @@
 		"año de publicacion":	"1967",
 		"genero":	"Realismo magico",
 		"sinopsis":	"Esta novela cuenta la historia",
-		"disponibilidad":	1
+		"disponibilidad":	0
 	}, {
 		"id":	12,
 		"nombre":	"anos de soledad",

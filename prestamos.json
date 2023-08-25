@@ -1,21 +1,36 @@
 [{
-		"usuario":	"fredd badilla",
-		"id":	4,
-		"inicio":	"25/07/2000",
-		"fin":	"26/07/2002"
+		"id":	0,
+		"usuario":	"Randall Corella",
+		"idEjemplar":	9,
+		"inicio":	"25/07/2003",
+		"fin":	"26/07/2020",
+		"estado":	1
 	}, {
-		"usuario":	"fredd badilla",
+		"id":	1,
+		"usuario":	"Randall Corella",
+		"idEjemplar":	10,
+		"inicio":	"25/08/2020",
+		"fin":	"27/10/2022",
+		"estado":	1
+	}, {
 		"id":	2,
-		"inicio":	"12/11/2143",
-		"fin":	"12/11/2123"
+		"usuario":	"Randall Corella",
+		"idEjemplar":	3,
+		"inicio":	"20/07/2024",
+		"fin":	"27/07/2024",
+		"estado":	1
 	}, {
-		"usuario":	"fredd badilla",
-		"id":	12,
-		"inicio":	"12/12/2002",
-		"fin":	"13/12/2002"
+		"id":	3,
+		"usuario":	"Randall Corella",
+		"idEjemplar":	0,
+		"inicio":	"26/08/2000",
+		"fin":	"26/08/2023",
+		"estado":	1
 	}, {
-		"usuario":	"fredd badilla",
-		"id":	23,
-		"inicio":	"25/06/2020",
-		"fin":	"27/07/2021"
+		"id":	5,
+		"usuario":	"Randall Corella",
+		"idEjemplar":	11,
+		"inicio":	"20/08/2023",
+		"fin":	"24/08/2023",
+		"estado":	1
 	}]

@@ -1,0 +1,49 @@
+[{
+		"titulo":	"Cien años de soledad",
+		"autor":	"fredd badilla",
+		"anno":		"1928",
+		"genero":	"erotico",
+		"reseña":	"una chica de 15 años, la cual sus padres salieron de viaje.",
+		"id":	"1"
+	},
+	{
+		"titulo":	"Cien años de soledad",
+		"autor":	"fredd badilla",
+		"anno":		"1928",
+		"genero":	"erotico",
+		"reseña":	"una chica de 15 años, la cual sus padres salieron de viaje.",
+		"id":	"2"
+	},
+	{
+		"titulo":	"Cien años de soledad",
+		"autor":	"fredd badilla",
+		"anno":		"1928",
+		"genero":	"erotico",
+		"reseña":	"una chica de 15 años, la cual sus padres salieron de viaje.",
+		"id":	"3"
+	},
+	 {
+		"titulo":	"Orgullo y prejuicio",
+		"autor":	"Randall Corella",
+		"anno":		"2015",
+		"genero":	"Novela romántica",
+		"reseña":	"La historia sigue Elizabeth Bennet mientras",
+		"id":	"4"
+	},
+	 {
+		"titulo":	"Orgullo y prejuicio",
+		"autor":	"Randall Corella",
+		"anno":		"2015",
+		"genero":	"Novela romántica",
+		"reseña":	"La historia sigue Elizabeth Bennet mientras",
+		"id":	"5"
+	},
+	{
+		"titulo":	"Orgullo y prejuicio",
+		"autor":	"Randall Corella",
+		"anno":		"2015",
+		"genero":	"Novela romántica",
+		"reseña":	"La historia sigue Elizabeth Bennet mientras",
+		"id":	"6"
+	}
+]
