@@ -1,6 +1,7 @@
 #include "Tools.c"
 
-
+//gcc -o main main.c cJSON/cJSON.c -I cJSON -lm
+//C:\\Users\\fredd\\Downloads\\test.txt
 
 //Declaracion de funciones
 void mainMenu();
@@ -22,6 +23,7 @@ char* getDateLoan();
 char* getNameLoan();
 void viewLoan();
 void loanMaturity();
+void giveBackBook();
 
 //Inicio del programa
 int main() {
@@ -191,7 +193,7 @@ void generalMenu() {
     } else if (option == 3) {
         loan();
     } else if (option == 4) {
-        //loan();
+        giveBackBook();
     } else if (option == 5) {
         mainMenu();
     } else {
@@ -453,4 +455,20 @@ void loanMaturity() {
     return operativeMenu();
 }
 
-//C:\\Users\\fredd\\Downloads\\test.txt
+void giveBackBook() {
+    char idTemp[100];
+    fflush(stdin);
+    printf("\nIngrese el ID de su prestamo: ");
+    fgets(idTemp, sizeof(idTemp), stdin); //Lee la cadena 
+    idTemp[strlen(idTemp) - 1] = '\0';
+
+    if (numberOnString(idTemp) == 0) {
+        printf("\nERROR-> El ID no debe contener letras\n");
+        return generalMenu();
+    };
+
+    int idLoan = atoi(idTemp);
+    char *date = getDateLoan("finalizacion");
+    checkLoans(idLoan, date);
+    return generalMenu();
+};

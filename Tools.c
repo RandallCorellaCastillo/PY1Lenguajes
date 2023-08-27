@@ -5,6 +5,8 @@
 #include <ctype.h>
 #include <time.h>
 
+void getTicket(char*, char*);
+
 int compare(char* val1, char* val2) {
     //compare the char*
     int result = strcmp(val1, val2);
@@ -447,8 +449,37 @@ void modifyCatalogDisp(int idSeek) {
 
     free(json_str);
     free(jsonArray);
-
 }
+
+void saveEarnings(int earning, char* date) {
+    FILE *file = fopen("earnings.json", "r");
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+    char *fileContent = (char *)malloc(fileSize + 1);
+    fread(fileContent, 1, fileSize, file);
+    fclose(file);
+    fileContent[fileSize] = '\0';
+
+    // Analizar el contenido JSON
+    cJSON *jsonArray = cJSON_Parse(fileContent);
+    int arraySize = cJSON_GetArraySize(jsonArray);
+    free(fileContent);
+
+    // Crear un nuevo objeto y agregarlo al arreglo
+    cJSON *newObj = cJSON_CreateObject();
+    cJSON_AddNumberToObject(newObj, "id", arraySize);
+    cJSON_AddNumberToObject(newObj, "ganancia", earning);
+    cJSON_AddStringToObject(newObj, "fecha", date);
+    cJSON_AddItemToArray(jsonArray, newObj);
+
+    // Convertir el JSON a una cadena
+    char *json_str = cJSON_Print(jsonArray);
+    // Guardar en archivo
+    saveToJson(json_str, "earnings.json");
+    cJSON_Delete(jsonArray);
+    free(json_str);
+};
 
 int sizeOfCatalog() {
     FILE *fp = fopen("catalog.json", "r");
@@ -465,3 +496,119 @@ int sizeOfCatalog() {
     free(json);
     return arraySize;
 }
+
+void checkLoans(int idLoan, char* date) {
+    FILE *fp = fopen("prestamos.json", "r");
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+
+    char buffer[size];
+    int len = fread(buffer, 1, sizeof(buffer), fp);
+    fclose(fp);
+
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+    cJSON *tempLoan = cJSON_GetArrayItem(json, idLoan);
+
+    if (tempLoan == NULL) {
+        printf("\nERROR-> El ID ingresado no corresponde a ningun prestamo\n");
+        return;
+    };
+
+    cJSON *tempDate = cJSON_GetObjectItemCaseSensitive(tempLoan, "fin");
+
+    if (strcmp(tempDate->valuestring, date) != 0) {
+        printf("\nERROR-> La fecha ingresada no coindice con el prestamo que esta buscando\n");
+        return;
+    };
+
+    cJSON *tempDate2 = cJSON_GetObjectItemCaseSensitive(tempLoan, "inicio");
+
+    cJSON_Delete(json);
+    getTicket(tempDate2->valuestring, tempDate->valuestring);
+    return;
+};
+
+void getTicket(char* dateStart, char* dateEnd) {
+    struct tm date1 = {0};
+    struct tm date2 = {0};
+    struct tm currentDate = {0};
+    char dateStr[11]; 
+
+    int day1, month1, year1, day2, month2, year2;
+    
+    sscanf(dateStart, "%d/%d/%d", &day1, &month1, &year1);
+    sscanf(dateEnd, "%d/%d/%d", &day2, &month2, &year2);
+    
+    date1.tm_mday = day1;
+    date1.tm_mon = month1 - 1;
+    date1.tm_year = year1 - 1900;
+    
+    date2.tm_mday = day2;
+    date2.tm_mon = month2 - 1;
+    date2.tm_year = year2 - 1900; 
+
+    time_t currentTime;
+    time(&currentTime); 
+    struct tm *localTime = localtime(&currentTime);
+    strftime(dateStr, sizeof(dateStr), "%d/%m/%Y", localTime);
+
+    currentDate.tm_year = localTime->tm_year;
+    currentDate.tm_mon = localTime->tm_mon;
+    currentDate.tm_mday = localTime->tm_mday;
+
+    time_t time1 = mktime(&date1);
+    time_t time2 = mktime(&date2);
+    time_t time3 = mktime(&currentDate);
+
+    double differenceInSeconds = difftime(time1, time2);
+    int differenceInDaysOnTime = differenceInSeconds / (60 * 60 * 24);
+    differenceInSeconds = difftime(time2, time3);
+    int differenceInDaysOffTime = differenceInSeconds / (60 * 60 * 24);
+    
+    if (differenceInDaysOnTime < 0) {
+        differenceInDaysOnTime = differenceInDaysOnTime * -1;
+    };
+
+    if (differenceInDaysOffTime < 0) {
+        differenceInDaysOffTime = differenceInDaysOffTime * -1;
+    } else {
+        differenceInDaysOnTime = differenceInDaysOnTime - differenceInDaysOffTime;
+        differenceInDaysOffTime = 0;
+    };
+
+    //si es negativo se paso si no esta on time
+
+    //Calculamos el monto a pagar
+    //Primeramente calculemos el costo del prestamo como tal segun la duracion que se establecio
+    int ticket = 0;
+    
+    if (differenceInDaysOnTime <= 7) {
+        ticket = differenceInDaysOnTime * 150;
+    };
+    if (differenceInDaysOnTime >= 8 && differenceInDaysOnTime <= 15) {
+        ticket = differenceInDaysOnTime * 125;
+    };
+    if (differenceInDaysOnTime >= 16) {
+        ticket = differenceInDaysOnTime * 100;
+    };
+
+    //Proseguimos con el calcule de dia extras en caso de haberlos
+    if (differenceInDaysOffTime <= 7) {
+        ticket = ticket + (differenceInDaysOffTime * 75);
+    };
+    if (differenceInDaysOffTime >= 8 && differenceInDaysOffTime <= 15) {
+        ticket = ticket + (differenceInDaysOffTime * 50);
+    };
+    if (differenceInDaysOffTime >= 16) {
+        ticket = ticket + (differenceInDaysOffTime * 25);
+    };
+
+    printf("\nAVISO-> ");
+    printf("%d", ticket);
+    printf("<- Es el monto a pagar en TECDOLLARS\n");
+
+    saveEarnings(ticket, dateStr);
+    return;
+};
