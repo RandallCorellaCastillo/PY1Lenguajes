@@ -451,6 +451,36 @@ void modifyCatalogDisp(int idSeek) {
     free(jsonArray);
 }
 
+void modifyCatalogDispV2(int idSeek) {
+    FILE *file = fopen("catalog.json", "r");
+
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+
+    char *fileContent = (char *)malloc(fileSize + 1);
+    fread(fileContent, 1, fileSize, file);
+
+    fclose(file);
+
+    fileContent[fileSize] = '\0';
+
+    // Analizar el contenido JSON
+    cJSON *jsonArray = cJSON_Parse(fileContent);
+
+    cJSON_GetArrayItem(jsonArray, idSeek);
+
+    cJSON_SetNumberValue(cJSON_GetObjectItem(cJSON_GetArrayItem(jsonArray, idSeek), "disponibilidad"), 1);
+
+    //id
+    char *json_str = cJSON_Print(jsonArray);
+
+    saveToJson(json_str, "catalog.json");
+
+    free(json_str);
+    free(jsonArray);
+}
+
 void saveEarnings(int earning, char* date) {
     FILE *file = fopen("earnings.json", "r");
     fseek(file, 0, SEEK_END);
@@ -512,22 +542,36 @@ void checkLoans(int idLoan, char* date) {
     cJSON *tempLoan = cJSON_GetArrayItem(json, idLoan);
 
     if (tempLoan == NULL) {
-        printf("\nERROR-> El ID ingresado no corresponde a ningun prestamo\n");
+        printf("\nERROR-> El ID ingresado no corresponde a ningun prestamo\n\n");
         return;
     };
 
     cJSON *tempDate = cJSON_GetObjectItemCaseSensitive(tempLoan, "fin");
+    cJSON *tempEs = cJSON_GetObjectItemCaseSensitive(tempLoan, "estado");
+    cJSON *tempIdEj = cJSON_GetObjectItemCaseSensitive(tempLoan, "idEjemplar");
 
     if (strcmp(tempDate->valuestring, date) != 0) {
-        printf("\nERROR-> La fecha ingresada no coindice con el prestamo que esta buscando\n");
+        printf("\nERROR-> La fecha ingresada no coindice con el prestamo que esta buscando\n\n");
+        return;
+    };
+
+    if (tempEs->valueint == 0) {
+        printf("\nERROR-> Este prestamo ya fue cancelado\n\n");
         return;
     };
 
     cJSON *tempDate2 = cJSON_GetObjectItemCaseSensitive(tempLoan, "inicio");
+    cJSON_SetNumberValue(cJSON_GetObjectItem(cJSON_GetArrayItem(json, idLoan), "estado"), 0);
+    modifyCatalogDispV2(tempIdEj->valueint);
+
+    char *json_str = cJSON_Print(json);
+
+    saveToJson(json_str, "prestamos.json");
 
     cJSON_Delete(json);
+    free(json_str);
     getTicket(tempDate2->valuestring, tempDate->valuestring);
-    return;
+    //return;
 };
 
 void getTicket(char* dateStart, char* dateEnd) {
@@ -607,7 +651,7 @@ void getTicket(char* dateStart, char* dateEnd) {
 
     printf("\nAVISO-> ");
     printf("%d", ticket);
-    printf("<- Es el monto a pagar en TECDOLLARS\n");
+    printf("<- Es el monto a pagar en TECDOLLARS\n\n");
 
     saveEarnings(ticket, dateStr);
     return;

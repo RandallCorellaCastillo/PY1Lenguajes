@@ -18,14 +18,14 @@
 		"idEjemplar":	3,
 		"inicio":	"20/07/2023",
 		"fin":	"27/07/2024",
-		"estado":	1
+		"estado":	0
 	}, {
 		"id":	3,
 		"usuario":	"Randall Corella",
 		"idEjemplar":	0,
 		"inicio":	"26/08/2000",
 		"fin":	"26/08/2023",
-		"estado":	1
+		"estado":	0
 	}, {
 		"id":	5,
 		"usuario":	"Randall Corella",
