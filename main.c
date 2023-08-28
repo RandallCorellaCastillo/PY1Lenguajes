@@ -211,6 +211,12 @@ void generalMenu() {
     
 };
 
+/*
+loan
+This option is responsible to create new loan.
+
+@return return generalMenu()
+*/
 
 void loan() {
     fflush(stdin);
@@ -255,6 +261,13 @@ void loan() {
 
 }
 
+/*
+getNameLoan
+This option is responsible to valid username.
+
+@return return username if valid, otherwise return the same funct.
+*/
+
 char* getNameLoan() {
     char userName[100];
     printf("Ingrese el nombre de usuario:\n");
@@ -275,6 +288,13 @@ char* getNameLoan() {
     return res;
 }
 
+/*
+getIdloan
+
+This option is responsible to valid book id of loan.
+
+@return return id if valid, otherwise return the same funct.
+*/
 int getIdloan() {
     fflush(stdin);
     int id;
@@ -299,6 +319,16 @@ int getIdloan() {
     return id;
 }
 
+/*
+getDateLoan
+This option is responsible to valid date.
+
+@param info type of date, "start" or "end"
+This option is responsible to valid date.
+
+@return return date if valid, otherwise return the same funct.
+*/
+
 char* getDateLoan(char* info) {
     char date[100];
     fflush(stdin);
@@ -321,6 +351,15 @@ char* getDateLoan(char* info) {
     fflush(stdin);
     return res;
 }
+
+
+/*
+view Loan
+*
+This option is responsible display the loans info.
+
+@return return is none, info is displayed on console.
+*/
 
 
 void viewLoan() {
@@ -394,6 +433,15 @@ void viewLoan() {
     return operativeMenu();
 }
 
+
+/*
+Loan maturity
+*
+This option is responsible display the loans maturity info.
+
+@return return is none, info is displayed on console.
+*/
+
 void loanMaturity() {
 
     time_t currentTime;
@@ -461,6 +509,15 @@ void loanMaturity() {
     return operativeMenu();
 }
 
+
+/*
+give back books
+*
+This option is responsible for give back the book on loan.
+
+@return return is none, info is saved on Json.
+*/
+
 void giveBackBook() {
     char idTemp[100];
     fflush(stdin);
@@ -480,6 +537,13 @@ void giveBackBook() {
 };
 
 
+/*
+advance seek
+*
+This option is responsible for requesting the parameters for the search.
+
+@return return is none, info is displayed on console.
+*/
 
 void advancedSeek() {
     char type[100];
@@ -597,13 +661,9 @@ void advanceSeek_E(char* info, char* typeOY, int flagName, int flagAuthor, int f
         //
 
         int comparacionT = strcmp(title->valuestring, info);
-        //printf("info: %s, busqueda: %s",info, title->valuestring);
-        //printf("info: %s, busqueda: %s",info, author->valuestring);
-        //printf("info: %s, busqueda: %s",info, sumary->valuestring);
         int comparacionA = strcmp(author->valuestring, info);
         int comparacionS = strcmp(sumary->valuestring, info);
 
-        //printf("%d, %d, %d\n", comparacionA, comparacionS, comparacionT);
         char disp[20];
 
         if(verifyDisp(id->valueint)) {

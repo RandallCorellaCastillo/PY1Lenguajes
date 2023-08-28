@@ -7,12 +7,21 @@
 
 void getTicket(char*, char*);
 
+
 int compare(char* val1, char* val2) {
     //compare the char*
     int result = strcmp(val1, val2);
     return result;
 }
 
+/*
+Save info in Json
+*
+@param data text to save.
+@param filename is the root of Json
+
+@return return is none, info is saved on json.
+*/
 void saveToJson(const char *data, const char *filename) {
     //open file.
     FILE *file = fopen(filename, "w");
@@ -26,6 +35,13 @@ void saveToJson(const char *data, const char *filename) {
     fclose(file);
 }
 
+/*
+read Json 
+*
+@param URL is the root of Json
+
+@return return the json info.
+*/
 char* readJson(char* URL){
     // open the file
     FILE *fp = fopen(URL, "r");
@@ -47,7 +63,14 @@ char* readJson(char* URL){
     return text;
 }
 
+/*
+verify book disp.
+*
+@param idSeek is the id of book.
 
+
+@return return 1 if valid, otherwise 0.
+*/
 int verifyDisp(int idSeek) {
     FILE *file = fopen("catalog.json", "r");
 
@@ -76,6 +99,14 @@ int verifyDisp(int idSeek) {
 
 }
 
+
+/*
+commun seek of books.
+*
+@param info text to seek.
+
+@return ireturn is none, info is displayed on console.
+*/
 void seekCommun(char* info) {
 
     char* buffer = readJson("catalog.json");
@@ -121,7 +152,13 @@ void seekCommun(char* info) {
 }
 
 
+/*
+validate number on string.
+*
+@param text text to validate.
 
+@return return 1 if valid, otherwise 0.
+*/
 int numberOnString(char* text) {
     int i = 0;
     //find letters in number.
@@ -134,6 +171,13 @@ int numberOnString(char* text) {
     return 1;
 };
 
+/*
+validate string.
+*
+@param text text to validate.
+
+@return return 1 if valid,  otherwise 0.
+*/
 int correctString(char* text) {
     int i = 0;
     //find number in text.
@@ -156,6 +200,15 @@ int correctString(char* text) {
 
     return 1;
 };
+
+/*
+save user.
+*
+@param id user id.
+@param name user name.
+
+@return return is none, info is saved on Json.
+*/
 
 void saveUsers (char* id, char* name) {
     FILE *file = fopen("users.json", "r");
@@ -193,7 +246,13 @@ void saveUsers (char* id, char* name) {
 };
 
 
+/*
+validate user.
+*
+@param id is userId.
 
+@return return 1 valid, otherwise 0.
+*/
 int checkUsers(char* id) {
     FILE *fp = fopen("users.json", "r");
     fseek(fp, 0, SEEK_END);
@@ -219,6 +278,18 @@ int checkUsers(char* id) {
     return 1;
 };
 
+/*
+save books.
+*
+@param name is name book.
+@param autor is author name.
+@param year publish year.
+@param gender gender of book.
+@param synopsis summary.
+@param quan cuantity.
+
+@return return is none, info is saved on Json.
+*/
 void saveBooks(char* name, char* autor, char* year, char* gender, char* synopsis, char* quan) {
     FILE *file = fopen("catalog.json", "r");
     fseek(file, 0, SEEK_END);
@@ -258,6 +329,15 @@ void saveBooks(char* name, char* autor, char* year, char* gender, char* synopsis
     free(json_str);
 };
 
+/*
+validate book name.
+*
+@param name to validate.
+
+@return return 1 if valid, otherwise 0.
+*/
+
+
 int checkBook(char* name) {
     FILE *fp = fopen("catalog.json", "r");
     fseek(fp, 0, SEEK_END);
@@ -282,6 +362,15 @@ int checkBook(char* name) {
     cJSON_Delete(json);
     return 1;
 };
+
+
+/*
+process books and validate.
+*
+@param token to validate and save.
+
+@return return 1 if valid, otherwise 0.
+*/
 
 int processTokens(char *token) {
     char* caracteristics[5];
@@ -323,6 +412,13 @@ int processTokens(char *token) {
     return 1;
 };
 
+/*
+validate date.
+*
+@param date to validate.
+
+@return return 1 if valid, otherwise 0.
+*/
 
 int validateDate(char *date) {
     int dia, mes, anio;
@@ -335,6 +431,14 @@ int validateDate(char *date) {
        return 1;
     }
 }
+
+/*
+validate the name.
+*
+@param name to validate.
+
+@return return 1 if valid, otherwise 0.
+*/
 
 int checkNameUsers(char* name) {
     FILE *fp = fopen("users.json", "r");
@@ -360,6 +464,11 @@ int checkNameUsers(char* name) {
     return 0;
 };
 
+/*
+Display commun seek info.
+
+@return return is none, info is displayed on console.
+*/
 void simpleSeek() {
     char text[100];
     printf("Ingrese el texto a buscar:\n");
@@ -370,6 +479,13 @@ void simpleSeek() {
 
 }
 
+/*
+validate the string.
+*
+@param text to validate.
+
+@return return 1 if valid, otherwise 0.
+*/
 
 int validateStringOnDate(char* text) {
     char com = '/';
@@ -384,7 +500,16 @@ int validateStringOnDate(char* text) {
     return 1;
 };
 
-
+/*
+save loans.
+*
+@param UserL user Name.
+@param id is book id.
+@param initDate is start date.
+@param endDate is end date.
+*
+@return return is none, but info is saved in JSON.
+*/
 void saveLoan(char* UserL, int id, char* initDate, char* endDate) {
     FILE *file = fopen("prestamos.json", "r");
     fseek(file, 0, SEEK_END);
@@ -418,6 +543,14 @@ void saveLoan(char* UserL, int id, char* initDate, char* endDate) {
     free(json_str);
 };
 
+/*
+Modify book disp.
+*
+@param idSeek is book id.
+*
+@return return is none, but info is saved in JSON.
+*/
+
 void modifyCatalogDisp(int idSeek) {
     FILE *file = fopen("catalog.json", "r");
 
@@ -447,6 +580,15 @@ void modifyCatalogDisp(int idSeek) {
     free(json_str);
     free(jsonArray);
 }
+
+
+/*
+Modify book disp.
+*
+@param idSeek is book id.
+*
+@return return is none, but info is saved in JSON.
+*/
 
 void modifyCatalogDispV2(int idSeek) {
     FILE *file = fopen("catalog.json", "r");
@@ -478,6 +620,14 @@ void modifyCatalogDispV2(int idSeek) {
     free(jsonArray);
 }
 
+/*
+Save loans earnings.
+*
+@param earning is loan earning.
+@param date the date of get earnings
+*
+@return return is none, but info is saved in JSON.
+*/
 void saveEarnings(int earning, char* date) {
     FILE *file = fopen("earnings.json", "r");
     fseek(file, 0, SEEK_END);
@@ -508,6 +658,14 @@ void saveEarnings(int earning, char* date) {
     free(json_str);
 };
 
+
+
+/*
+Calculate the size of the catalog.
+*
+@return returns the cuantity of books.
+*/
+
 int sizeOfCatalog() {
     FILE *fp = fopen("catalog.json", "r");
     fseek(fp, 0, SEEK_END);
@@ -523,6 +681,17 @@ int sizeOfCatalog() {
     free(json);
     return arraySize;
 }
+
+/*
+This first line is a brief description.
+*
+Loans status
+*
+@param idLoan id of the loan.
+@param date end date of the loan.
+*
+@return return is none, loan info is displayed on the console.
+*/
 
 void checkLoans(int idLoan, char* date) {
     FILE *fp = fopen("prestamos.json", "r");
@@ -571,6 +740,15 @@ void checkLoans(int idLoan, char* date) {
     //return;
 };
 
+
+/*
+calculate the payment of the loan.
+*
+@param dateStart start date of the loan.
+@param dateEnd end date of the loan.
+*
+@return return is none, the info of payments is save in JSON.
+*/
 void getTicket(char* dateStart, char* dateEnd) {
     struct tm date1 = {0};
     struct tm date2 = {0};
@@ -654,7 +832,15 @@ void getTicket(char* dateStart, char* dateEnd) {
     return;
 };
 
-
+/*
+get info of type.
+*
+Select 2 types of seek, Exact or containe.
+*
+No Param.
+*
+@return return the type of seek selected.
+*/
 char* getTypeSeek() {
     fflush(stdin);
     char type[100];
@@ -668,7 +854,11 @@ char* getTypeSeek() {
 
     return text;
 }
-
+/*
+get info of operator
+*
+@return return the opertor selected.
+*/
 char* getOperSeek() {
     fflush(stdin);
     char type[100];
