@@ -25,6 +25,12 @@ void viewLoan();
 void loanMaturity();
 void giveBackBook();
 
+
+void advancedSeek();
+
+void advanceSeek_C(char* info, char* typeOY, int flagName, int flagAuthor, int flagSum);
+void advanceSeek_E(char* info, char* typeOY, int flagName, int flagAuthor, int flagSum);
+
 //Inicio del programa
 int main() {
     mainMenu();
@@ -189,7 +195,7 @@ void generalMenu() {
         printf("\n");
 
     } else if (option == 2) {
-
+        advancedSeek();
     } else if (option == 3) {
         loan();
     } else if (option == 4) {
@@ -472,3 +478,162 @@ void giveBackBook() {
     checkLoans(idLoan, date);
     return generalMenu();
 };
+
+
+
+void advancedSeek() {
+    char type[100];
+    char oper[100];
+    char text[100];
+    fflush(stdin);
+    printf("Ingrese el texto a buscar:\n");
+
+    fgets(text, sizeof(text), stdin); // Lee la cadena con espacios
+    fflush(stdin);
+    text[strlen(text) - 1] = '\0';
+
+    strcpy(type, getTypeSeek());
+    strcpy(oper, getOperSeek());
+
+    fflush(stdin);
+    printf("¿Desea buscar por nombre? En caso de que no, presione enter: ");
+    int name = getchar();
+    fflush(stdin);
+    printf("¿Desea buscar por autor? En caso de que no, presione enter: ");
+    int author = getchar();
+    fflush(stdin);
+    printf("¿Desea buscar por resumen? En caso de que no, presione enter: ");
+    int sumary = getchar();
+
+    int flagN = 1;
+    int flagA = 1;
+    int flagS = 1;
+    if (name == '\n') flagN = 0;
+    if (author == '\n') flagA = 0;
+    if (sumary == '\n') flagS = 0;
+
+
+    //text[strlen(text) - 1] = '\0';
+
+    if (strcmp(type, "C") == 0 ) advanceSeek_C(text, oper, flagN, flagA, flagS);
+    else advanceSeek_E(text, oper, flagN, flagA, flagS);
+    return generalMenu();
+}
+
+void advanceSeek_C(char* info, char* typeOY, int flagName, int flagAuthor, int flagSum) {
+    char* buffer = readJson("catalog.json");
+    //open the json object.
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+    //for each item in json.
+    printf("==============================================================================================================.\n");
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+        //id
+        cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //Titulo.
+        cJSON *title = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+        //author.
+        cJSON *author = cJSON_GetObjectItemCaseSensitive(item, "autor");
+        //sumary
+        cJSON *sumary = cJSON_GetObjectItemCaseSensitive(item, "sinopsis");
+        //
+        char *resT = strstr(title->valuestring, info);
+        char *resA = strstr(author->valuestring, info);
+        char *resS = strstr(sumary->valuestring, info);
+        char disp[20];
+
+        if(verifyDisp(id->valueint)) {
+            strcpy(disp, "Disponible");
+        } else {
+            strcpy(disp, "Ocupado");
+        }
+
+        int flag = 1; 
+        if(strcmp(typeOY, "Y") == 0) {
+            if (resA == NULL && flagAuthor == 1) flag = 0;
+            if (resT == NULL && flagName == 1) flag = 0;
+            if (resS == NULL && flagSum == 1) flag = 0;
+            if(flag == 1) {
+                printf("ID: %d, Titulo: %s, reseña: %s, Estado: %s\n",id->valueint, title->valuestring, sumary->valuestring, disp);
+                printf("==============================================================================================================.\n");
+            }
+        } else {
+            flag = 0;
+            if (resA != NULL && flagAuthor == 1) flag = 1;
+            if (resT != NULL && flagName == 1) flag = 1;
+            if (resS != NULL && flagSum == 1) flag = 1;
+
+            if(flag == 1) {
+                printf("ID: %d, Titulo: %s, reseña: %s, Estado: %s\n",id->valueint, title->valuestring, sumary->valuestring, disp);
+                printf("==============================================================================================================.\n");
+            }
+        }
+
+    }
+    //close the object
+    cJSON_Delete(json);
+}
+
+
+void advanceSeek_E(char* info, char* typeOY, int flagName, int flagAuthor, int flagSum) {
+    char* buffer = readJson("catalog.json");
+    //open the json object.
+    cJSON *json = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(json);
+    //for each item in json.
+    //printf("Flags %d, %d, %d\n", flagAuthor, flagSum, flagName);
+    printf("==============================================================================================================.\n");
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+        //id
+        cJSON *id = cJSON_GetObjectItemCaseSensitive(item, "id");
+        //Titulo.
+        cJSON *title = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+        //author.
+        cJSON *author = cJSON_GetObjectItemCaseSensitive(item, "autor");
+        //sumary
+        cJSON *sumary = cJSON_GetObjectItemCaseSensitive(item, "sinopsis");
+        //
+
+        int comparacionT = strcmp(title->valuestring, info);
+        //printf("info: %s, busqueda: %s",info, title->valuestring);
+        //printf("info: %s, busqueda: %s",info, author->valuestring);
+        //printf("info: %s, busqueda: %s",info, sumary->valuestring);
+        int comparacionA = strcmp(author->valuestring, info);
+        int comparacionS = strcmp(sumary->valuestring, info);
+
+        //printf("%d, %d, %d\n", comparacionA, comparacionS, comparacionT);
+        char disp[20];
+
+        if(verifyDisp(id->valueint)) {
+            strcpy(disp, "Disponible");
+        } else {
+            strcpy(disp, "Ocupado");
+        }
+
+        int flag = 1; 
+        if(strcmp(typeOY, "Y") == 0) {
+            if (comparacionA != 0 && flagAuthor == 1) flag = 0;
+            if (comparacionT != 0  && flagName == 1) flag = 0;
+            if (comparacionS != 0  && flagSum == 1) flag = 0;
+            if(flag == 1) {
+                printf("ID: %d, Titulo: %s, reseña: %s, Estado: %s\n",id->valueint, title->valuestring, sumary->valuestring, disp);
+                printf("==============================================================================================================.\n");
+            }
+        } else {
+            flag = 0;
+            if (comparacionT == 0  && flagName == 1) flag = 1;
+            if (comparacionA == 0  && flagAuthor == 1) flag = 1;
+            if (comparacionS == 0 && flagSum == 1) flag = 1;
+
+            if(flag == 1) {
+                printf("ID: %d, Titulo: %s, reseña: %s, Estado: %s\n",id->valueint, title->valuestring, sumary->valuestring, disp);
+                printf("==============================================================================================================.\n");
+            }
+        }
+
+    }
+    //close the object
+    cJSON_Delete(json);
+}

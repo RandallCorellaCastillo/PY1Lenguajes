@@ -120,9 +120,6 @@ void seekCommun(char* info) {
     cJSON_Delete(json);
 }
 
-void advancedSeek(char* info, char typeCE) {
-    
-}
 
 
 int numberOnString(char* text) {
@@ -656,3 +653,32 @@ void getTicket(char* dateStart, char* dateEnd) {
     saveEarnings(ticket, dateStr);
     return;
 };
+
+
+char* getTypeSeek() {
+    fflush(stdin);
+    char type[100];
+    printf("Seleccione la forma 'Exacta'(E) o 'Contiene'(C): ");
+    fgets(type, 100, stdin);
+    char *text = (char *)malloc(sizeof(type) * sizeof(char));
+    strcpy(text, type);
+    text[strlen(text) - 1] = '\0';
+
+    if(!(strcmp(text, "E") == 0 || strcmp(text, "C") == 0)) return getTypeSeek();
+
+    return text;
+}
+
+char* getOperSeek() {
+    fflush(stdin);
+    char type[100];
+    printf("Seleccione la forma para los operandos 'Y' o 'O': ");
+    fgets(type, 100, stdin);
+    char *text = (char *)malloc(sizeof(type) * sizeof(char));
+    strcpy(text, type);
+    text[strlen(text) - 1] = '\0';
+
+    if(!(strcmp(text, "Y") == 0 || strcmp(text, "O") == 0)) return getOperSeek();
+
+    return text;
+}
