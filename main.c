@@ -24,6 +24,7 @@ char* getNameLoan();
 void viewLoan();
 void loanMaturity();
 void giveBackBook();
+void seeStats();
 
 
 void advancedSeek();
@@ -58,7 +59,7 @@ void mainMenu() {
         return;
     } else {
         printf("Opcion incorrecta, intentalo de nuevo\n");
-        getchar();  
+        //getchar();  
         return mainMenu();
     };
 };
@@ -71,6 +72,7 @@ void operativeMenu() {
     printf("2. Gestion de usuarios\n");
     printf("3. Historial de prestamos\n");
     printf("4. Vencimiento de prestamos\n");
+    printf("5. Estadisticas\n");
     printf("6. Volver\n");
     printf("Ingrese su opcion: ");
     scanf("%d", &option);
@@ -85,12 +87,14 @@ void operativeMenu() {
         return viewLoan();
     } else if (option == 4) {
         return loanMaturity();
+    } else if (option == 5) {
+        return seeStats();
     } 
     else if (option == 6) {
         return mainMenu();
     } else {
         printf("Opcion incorrecta, intentalo de nuevo\n");
-        getchar(); 
+        //getchar(); 
         return operativeMenu();
     };
 };
@@ -179,10 +183,10 @@ void catalogManagement() {
 void generalMenu() {
     int option;
     printf("Opciones Generales\n");
-    printf("1. Búsqueda simple\n");
-    printf("2. Búsqueda avanzada\n");
-    printf("3. Préstamo\n");
-    printf("4. Devolución\n");
+    printf("1. Busqueda simple\n");
+    printf("2. Busqueda avanzada\n");
+    printf("3. Prestamo\n");
+    printf("4. Devolucion\n");
     printf("5. Volver\n");
     printf("Ingrese su opcion: ");
     scanf("%d", &option);
@@ -204,7 +208,7 @@ void generalMenu() {
         mainMenu();
     } else {
         printf("Opcion incorrecta, intentalo de nuevo\n");
-        getchar(); 
+        //getchar(); 
         fflush(stdin);
         return generalMenu();
     };
@@ -697,3 +701,16 @@ void advanceSeek_E(char* info, char* typeOY, int flagName, int flagAuthor, int f
     //close the object
     cJSON_Delete(json);
 }
+
+void seeStats() {
+    printf("\nA. Top 3 de producciones (nombre) mas prestadas.\n\n");
+    getDifBooks();
+    printf("\n");
+    printf("\nB. Top 3 de usuarios con mas prestamos.\n\n");
+    userXLoan();
+    printf("\n");
+    printf("\nC. Top 5 de mes-año con mayor monto recaudado.\n\n");
+    earningsPerMonth();
+    printf("\n");
+    return operativeMenu();
+};

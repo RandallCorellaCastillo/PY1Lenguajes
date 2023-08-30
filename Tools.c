@@ -7,6 +7,14 @@
 
 void getTicket(char*, char*);
 
+/*
+    Struct to save name of books or persons and how many aparations each have
+*/
+struct Stats {
+    char *name;
+    int aparations;
+};
+
 
 int compare(char* val1, char* val2) {
     //compare the char*
@@ -872,3 +880,215 @@ char* getOperSeek() {
 
     return text;
 }
+
+/*
+get the number of different books on the catalog
+*
+@return return the number of diffenent books.
+*/
+int countDifBooks() {
+    FILE *fp = fopen("catalog.json", "r");
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+    char buffer[size];
+    int len = fread(buffer, 1, sizeof(buffer), fp);
+    fclose(fp);
+
+    cJSON *jsonBooks = cJSON_Parse(buffer);
+    int arraySize = cJSON_GetArraySize(jsonBooks);
+    int count = 0;
+
+    for (int i = 0; i < arraySize; i++) {
+        int temp = i;
+
+        if (temp == 0) {
+            count++;
+        } else {
+            cJSON *item = cJSON_GetArrayItem(jsonBooks, temp);
+            cJSON *item2 = cJSON_GetArrayItem(jsonBooks, temp - 1);
+            cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+            cJSON *idJ2 = cJSON_GetObjectItemCaseSensitive(item2, "nombre");
+
+            if (strcmp(idJ->valuestring, idJ2->valuestring) != 0) {
+                count++;
+            };
+        };
+    };
+
+    cJSON_Delete(jsonBooks);
+    return count;
+};
+
+/*
+Compare 2 values and the number returned depends of the comparition
+*
+@return -1 if the firts value is bigger than the second
+@return 1 if the second value is bigger than the first
+@return 0 if both are equals
+*/
+int compareItems(const void *a, const void *b) {
+    int valueA = ((struct Stats *)a)->aparations;
+    int valueB = ((struct Stats *)b)->aparations;
+
+    if (valueA > valueB) return -1;   
+    if (valueA < valueB) return 1;    
+    return 0;
+};
+
+/*
+get the count of the loans for each book and prints the top 3 des
+*
+@return
+*/
+void getDifBooks() {
+    cJSON *jsonBooks = cJSON_Parse(readJson("catalog.json"));
+    int arraySize = cJSON_GetArraySize(jsonBooks);
+    int count = 0;
+    struct Stats books[countDifBooks()]; 
+
+    for (int i = 0; i < arraySize; i++) {
+        int temp = i;
+
+        if (temp == 0) {
+            cJSON *item = cJSON_GetArrayItem(jsonBooks, temp);
+            cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+            books[count].name = (char*) malloc (strlen(idJ->valuestring) * sizeof(char*));
+            strcpy(books[count].name, idJ->valuestring);
+            books[count].aparations = 0;
+            count++;
+        } else {
+            cJSON *item = cJSON_GetArrayItem(jsonBooks, temp);
+            cJSON *item2 = cJSON_GetArrayItem(jsonBooks, temp - 1);
+            cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+            cJSON *idJ2 = cJSON_GetObjectItemCaseSensitive(item2, "nombre");
+
+            if (strcmp(idJ->valuestring, idJ2->valuestring) != 0) {
+                books[count].name = (char*) malloc (strlen(idJ->valuestring) * sizeof(char*));
+                strcpy(books[count].name, idJ->valuestring);
+                books[count].aparations = 0;
+                count++;
+            };
+        };
+    };
+
+    cJSON *jsonLoans = cJSON_Parse(readJson("prestamos.json"));
+    arraySize = cJSON_GetArraySize(jsonLoans);
+
+    
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(jsonLoans, i);
+        cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "idEjemplar");
+
+        cJSON *book = cJSON_GetArrayItem(jsonBooks, idJ->valueint);
+        cJSON *nameBook = cJSON_GetObjectItemCaseSensitive(book, "nombre");
+
+        for (int j = 0; j < countDifBooks(); j++) {
+            if (strcmp(books[j].name, nameBook->valuestring) == 0) {
+                books[j].aparations++;
+                break;
+            };
+        };
+    };
+
+    size_t numItems = sizeof(books) / sizeof(books[0]);
+    qsort(books, numItems, sizeof(struct Stats), compareItems);
+
+    for (int j = 0; j < 3; j++) {
+        printf("El libro ");
+        printf("%s", books[j].name);
+        printf(" se ha prestado un total de ");
+        printf("%d", books[j].aparations);
+        printf(" veces\n");
+    };
+
+    cJSON_Delete(jsonBooks);
+    cJSON_Delete(jsonLoans);
+};
+
+void userXLoan() {
+    cJSON *jsonUsers = cJSON_Parse(readJson("users.json"));
+    cJSON *jsonLoans = cJSON_Parse(readJson("prestamos.json"));
+    int arraySize = cJSON_GetArraySize(jsonUsers);
+    struct Stats users[arraySize];
+
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(jsonUsers, i);
+        cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "nombre");
+        users[i].name = (char*) malloc (strlen(idJ->valuestring) * sizeof(char*));
+        strcpy(users[i].name, idJ->valuestring);
+        users[i].aparations = 0;
+    };
+
+    arraySize = cJSON_GetArraySize(jsonLoans);
+
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(jsonLoans, i);
+        cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "usuario");
+
+        for (int j = 0; j < countDifBooks(); j++) {
+            if (strcmp(users[j].name, idJ->valuestring) == 0) {
+                users[j].aparations++;
+                break;
+            };
+        };
+    };
+
+    size_t numItems = sizeof(users) / sizeof(users[0]);
+    qsort(users, numItems, sizeof(struct Stats), compareItems);
+
+    for (int j = 0; j < 3; j++) {
+        printf("El usuario ");
+        printf("%s", users[j].name);
+        printf(" ha requerido prestamos de libros ");
+        printf("%d", users[j].aparations);
+        printf(" veces\n");
+    };
+
+    cJSON_Delete(jsonUsers);
+    cJSON_Delete(jsonLoans);
+};
+
+void earningsPerMonth() {
+    struct Stats months[] = {
+        {"Enero", 0},
+        {"Febrero", 0},
+        {"Marzo", 0},
+        {"Abril", 0},
+        {"Mayo", 0},
+        {"Junio", 0},
+        {"Julio", 0},
+        {"Agosto", 0},
+        {"Septiembre", 0},
+        {"Octubre", 0},
+        {"Noviembre", 0},
+        {"Diciembre", 0}
+    };
+
+    cJSON *jsonEarnings = cJSON_Parse(readJson("earnings.json"));
+    int arraySize = cJSON_GetArraySize(jsonEarnings);
+
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *item = cJSON_GetArrayItem(jsonEarnings, i);
+        cJSON *idJ = cJSON_GetObjectItemCaseSensitive(item, "fecha");
+        cJSON *idJ2 = cJSON_GetObjectItemCaseSensitive(item, "ganancia");
+
+        int dia, mes;
+        sscanf(idJ->valuestring, "%d/%d", &dia, &mes);
+
+        months[mes - 1].aparations = months[mes - 1].aparations + idJ2->valueint;
+    };
+
+    size_t numItems = sizeof(months) / sizeof(months[0]);
+    qsort(months, numItems, sizeof(struct Stats), compareItems);
+
+    for (int j = 0; j < 5; j++) {
+        printf("El mes ");
+        printf("%s", months[j].name);
+        printf(" se recaudo ");
+        printf("%d", months[j].aparations);
+        printf(" TECDOLLARS\n");
+    };
+
+    cJSON_Delete(jsonEarnings);
+};
